@@ -1,0 +1,158 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clipToPadding="false"
+    android:paddingEnd="@dimen/default_margin"
+    android:paddingStart="@dimen/default_margin">
+
+    <FrameLayout
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/colorAccentHighOpacity" />
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_square_white" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/feed_timeleft_margin"
+            android:adjustViewBounds="false"
+            android:contentDescription="Time left"
+            android:tint="@color/blackHighOpacity"
+            android:alpha="0.3"
+            app:srcCompat="@drawable/ic_timer_black_12dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/time_left_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/feed_timeleft_margin"
+            android:fontFamily="@font/lato"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="@dimen/text_caption"
+            app:autoSizeStepGranularity="0.5sp"
+            android:text="20min"
+            android:textColor="@color/blackHighOpacity"
+            android:textSize="@dimen/text_caption" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_small_height"
+        android:layout_marginStart="@dimen/default_margin"
+        android:background="@color/white"
+        android:elevation="4dp">
+
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_drop_down_arrow"
+                android:contentDescription="Drop down button"
+                android:tint="@color/colorSecondary"/>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:background="@color/semiLightGrey" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="@dimen/card_small_stops_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/departure_time_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:text="09:50"
+                    android:textColor="@color/colorSecondary"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/text_small" />
+
+                <TextView
+                    android:id="@+id/arrival_time_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:fontFamily="@font/roboto"
+                    android:text="11:00"
+                    android:textColor="@color/colorSecondary"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/text_small" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="14dp"
+                android:paddingStart="14dp">
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorSecondaryLowOpacity" />
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="@dimen/dot_size"
+                    android:layout_height="@dimen/dot_size"
+                    android:layout_gravity="start"
+                    app:srcCompat="@drawable/ic_dot_secondary_color" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="@dimen/dot_size"
+                    android:layout_height="@dimen/dot_size"
+                    android:layout_gravity="end"
+                    app:srcCompat="@drawable/ic_dot_secondary_color" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

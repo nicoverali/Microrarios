@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Spaces-->
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="large_margin">32dp</dimen>
+    <dimen name="next_bus_layout_paddingBottom">50dp</dimen>
+    <dimen name="feed_title_timeline_marginleft">32dp</dimen>
+    <dimen name="feed_blank_marginLeft">35dp</dimen>
+    <dimen name="feed_timeleft_margin">11dp</dimen>
+    <dimen name="feed_leavetime_margin">8dp</dimen>
+    <dimen name="feed_paddingBottom">40dp</dimen>
+
+    <!--Elements default height or width-->
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="selector_collapse_height">48dp</dimen>
+    <dimen name="selector_expand_height">130dp</dimen>
+    <dimen name="dot_size">8dp</dimen>
+    <dimen name="vertical_first_blank_timeline_height">36dp</dimen>
+    <dimen name="vertical_regular_blank_timeline_height">16dp</dimen>
+    <dimen name="card_small_height">48dp</dimen>
+    <dimen name="card_small_stops_width">140dp</dimen>
+    <dimen name="feed_blank_first_height">32dp</dimen>
+    <dimen name="feed_blank_separator_height">16dp</dimen>
+    <dimen name="feed_cards_separation_height">20dp</dimen>
+
+    <!--Text sizes-->
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_regular">16sp</dimen>
+    <dimen name="text_headline">22sp</dimen>
+    <dimen name="text_main_time">52dp</dimen>
+</resources>

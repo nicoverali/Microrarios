@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Microrarios</string>
+
+    <!--Template strings-->
+    <string name="time_template">%1$02d:%2$02d</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>

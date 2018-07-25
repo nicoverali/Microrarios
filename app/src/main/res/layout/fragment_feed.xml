@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/feed_paddingBottom"
+    android:background="@color/white"
+    android:clipChildren="false">
+
+
+    <ListView
+        android:id="@+id/next_buses_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/ic_card_list_separator"
+        android:dividerHeight="@dimen/feed_cards_separation_height"
+        android:clipChildren="false">
+    </ListView>
+
+    <Button
+        android:id="@+id/load_more_button"
+        android:layout_height="40dp"
+        android:layout_width="210dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="Cargar más"
+        style="@style/ButtonLoadMoreStyle"
+        android:background="@drawable/ic_button_load_more"/>
+
+</LinearLayout>

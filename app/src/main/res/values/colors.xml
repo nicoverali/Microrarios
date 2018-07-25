@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Theme colors-->
+    <color name="colorPrimary">#0984E3</color>
+    <color name="colorPrimaryDark">#005197</color>
+    <color name="colorSecondary">#6C5CE7</color>
+    <color name="colorAccent">#2ABE7E</color>
+    <color name="colorSecondaryLowOpacity">#B36C5CE7</color>
+    <color name="colorAccentHighOpacity">#402ABE7E</color>
+
+    <!--General colors-->
+    <color name="semiLightGrey">#E2E2E2</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blackHighOpacity">#4D000000</color>
+    <color name="whiteHighOpacity">#40FFFFFF</color>
+    <color name="whiteLowOpacity">#B3FFFFFF</color>
+
+    <!--Special colors-->
+    <color name="invisible">#00000000</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>

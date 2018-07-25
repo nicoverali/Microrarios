@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:focusableInTouchMode="true">
+
+        <include layout="@layout/template_toolbar"/>
+
+        <fragment
+            android:name="com.example.nicol.microrarios.NextBusFragment"
+            android:id="@+id/next_bus_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_next_bus" />
+
+        <fragment
+            android:name="com.example.nicol.microrarios.FeedFragment"
+            android:id="@+id/feed_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_feed" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
