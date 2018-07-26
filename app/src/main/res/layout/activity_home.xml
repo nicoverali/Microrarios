@@ -1,32 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".HomeActivity">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <include layout="@layout/template_toolbar" />
+    </android.support.design.widget.AppBarLayout>
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/slidinguppanel_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:clipChildren="false"
-        android:focusableInTouchMode="true">
+        android:gravity="top"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:umanoPanelHeight="@dimen/selector_collapse_height">
 
-        <include layout="@layout/template_toolbar"/>
+           <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <fragment
-            android:name="com.example.nicol.microrarios.NextBusFragment"
-            android:id="@+id/next_bus_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout="@layout/fragment_next_bus" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:focusableInTouchMode="true">
 
-        <fragment
-            android:name="com.example.nicol.microrarios.FeedFragment"
-            android:id="@+id/feed_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout="@layout/fragment_feed" />
+                    <fragment
+                        android:name="com.example.nicol.microrarios.NextBusFragment"
+                        android:id="@+id/next_bus_fragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_next_bus" />
 
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+                    <fragment
+                        android:name="com.example.nicol.microrarios.FeedFragment"
+                        android:id="@+id/feed_fragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_feed" />
+                </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <include layout="@layout/template_travel_selector" />
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</android.support.design.widget.CoordinatorLayout>

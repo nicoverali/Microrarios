@@ -1,154 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
+    android:id="@+id/selector_framelayout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/selector_expand_height"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@color/colorPrimary">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/sliding_layout"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="top"
-        sothree:umanoPanelHeight="@dimen/selector_collapse_height"
-        sothree:umanoShadowHeight="4dp"
-        android:background="@color/colorPrimary">
+        android:paddingStart="@dimen/large_margin"
+        android:paddingEnd="@dimen/large_margin"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_selector_left_dots" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/whiteLowOpacity"
+                android:text="Desde" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/whiteLowOpacity"/>
+
+            <View
+                android:layout_width="250dp"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/whiteLowOpacity"
+                android:text="Hasta" />
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/whiteLowOpacity"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/white"
+            android:layout_gravity="center_vertical|end"
+            app:srcCompat="@drawable/ic_swap_vert_black_24dp" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/selector_collapse_height"
+        android:layout_gravity="bottom|center_horizontal"
+        android:clickable="false">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Main Content"
-            android:textSize="16sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/lato"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_small"
+            android:text="Term. Punta Alta"/>
+
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/selector_expand_height">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp">
 
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="@dimen/large_margin"
-                android:paddingEnd="@dimen/large_margin">
-
-                <ImageView
-                    android:id="@+id/imageView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_selector_left_dots" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato"
-                        android:textSize="@dimen/text_caption"
-                        android:textColor="@color/whiteLowOpacity"
-                        android:text="Desde" />
-
-                    <Spinner
-                        android:id="@+id/spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/whiteLowOpacity"/>
-
-                    <View
-                        android:layout_width="250dp"
-                        android:layout_height="1dp"
-                        android:background="@color/white"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato"
-                        android:textSize="@dimen/text_caption"
-                        android:textColor="@color/whiteLowOpacity"
-                        android:text="Hasta" />
-
-                    <Spinner
-                        android:id="@+id/spinner2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/whiteLowOpacity"/>
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/imageView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:tint="@color/white"
-                    android:layout_gravity="center_vertical|end"
-                    app:srcCompat="@drawable/ic_swap_vert_black_24dp" />
-
-            </FrameLayout>
-
-            <LinearLayout
+            <ImageView
+                android:id="@+id/imageView8"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/selector_collapse_height"
-                android:layout_gravity="bottom|center_horizontal">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:tint="@color/white"
+                android:alpha="0.3"
+                app:srcCompat="@drawable/ic_right_arrow_16dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="@font/lato"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_small"
-                    android:text="Term. Punta Alta"/>
-
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="32dp">
-
-
-                    <ImageView
-                        android:id="@+id/imageView8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:tint="@color/white"
-                        android:alpha="0.3"
-                        app:srcCompat="@drawable/ic_right_arrow_16dp" />
-
-                    <ImageView
-                        android:id="@+id/imageView9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        app:srcCompat="@drawable/ic_pull_14dp" />
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="@font/lato"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_small"
-                    android:text="Parque de Mayo"/>
-
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:srcCompat="@drawable/ic_pull_14dp" />
         </FrameLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/lato"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_small"
+            android:text="Parque de Mayo"/>
 
-
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>
