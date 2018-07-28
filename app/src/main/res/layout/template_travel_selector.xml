@@ -9,17 +9,20 @@
 
 
     <FrameLayout
+        android:id="@+id/selector_expanded_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="@dimen/large_margin"
         android:paddingEnd="@dimen/large_margin"
-        android:visibility="invisible">
+        android:alpha="0"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="4dp"
             app:srcCompat="@drawable/ic_selector_left_dots" />
 
         <LinearLayout
@@ -38,17 +41,16 @@
                 android:text="Desde" />
 
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/origin_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/dropdownListPreferredItemHeight"
                 android:backgroundTint="@color/whiteLowOpacity"/>
 
             <View
-                android:layout_width="250dp"
+                android:layout_width="@dimen/selector_horizontal_divider_height"
                 android:layout_height="1dp"
                 android:background="@color/white"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="4dp"/>
 
             <TextView
                 android:id="@+id/textView10"
@@ -60,29 +62,33 @@
                 android:text="Hasta" />
 
             <Spinner
-                android:id="@+id/spinner2"
+                android:id="@+id/arrival_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/dropdownListPreferredItemHeight"
                 android:backgroundTint="@color/whiteLowOpacity"/>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imageView11"
+        <ImageButton
+            android:id="@+id/invert_imagebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:tint="@color/white"
             android:layout_gravity="center_vertical|end"
+            android:background="@color/invisible"
             app:srcCompat="@drawable/ic_swap_vert_black_24dp" />
 
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/selector_collapsed_view"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/selector_collapse_height"
         android:layout_gravity="bottom|center_horizontal"
         android:clickable="false">
 
         <TextView
+            android:id="@+id/origin_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -118,6 +124,7 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/arrival_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

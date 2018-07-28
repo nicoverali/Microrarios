@@ -13,7 +13,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+
 import bus.Bus;
+import bus.helper.ScheduleTime;
 import bus.timetable.BusTimeTable;
 
 public class FeedFragment extends Fragment {
@@ -74,7 +77,7 @@ public class FeedFragment extends Fragment {
         // Set last bus card
         Bus lastBus = mTimetable.lastBus();
         View lastBusCard = inflater.inflate(SINGLE_CARD_LAST, layout, false);
-        ((TextView) lastBusCard.findViewById(R.id.leave_time_textview)).setText("55 min");
+        ((TextView) lastBusCard.findViewById(R.id.leave_time_textview)).setText(getFormattedDifference(lastBus.getDepartureStop().getValue(), new ScheduleTime(DateTime.now())));
         ((TextView) lastBusCard.findViewById(R.id.departure_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getDepartureStop().getValue().getHour(), lastBus.getDepartureStop().getValue().getMinute()));
         ((TextView) lastBusCard.findViewById(R.id.arrival_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getArrivalStop().getValue().getHour(), lastBus.getArrivalStop().getValue().getMinute()));
         layout.addView(lastBusCard, 0);
@@ -102,8 +105,7 @@ public class FeedFragment extends Fragment {
         loadMoreButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-              // TODO If I don't allow a bus to be consider next if it departures now, then I would't have to add one in the parameter
-              adapter.addAll(mTimetable.nextBuses(adapter.getCount()));
+              adapter.addAll(mTimetable.nextBuses(adapter.getCount() + 1));
               setListViewHeightBasedOnChildren(listView);
               if(--loadCardsTimes == 0){
                   loadMoreButton.setEnabled(false);
@@ -112,6 +114,13 @@ public class FeedFragment extends Fragment {
         });
     }
 
+
+    // Private helper methods
+    private String getFormattedDifference(ScheduleTime fromTime, ScheduleTime toTime){
+        int difference = fromTime.differenceInMinutes(toTime);
+        String formattedDiff = difference >= 60 ? (difference/60) + " hr" : difference + " min";
+        return difference >= 60 ? formattedDiff + " " + (difference % 60) + "'" : formattedDiff;
+    }
 
     /**** Method for Setting the Height of the ListView dynamically.
      **** Hack to fix the issue of not showing all the items of the ListView
