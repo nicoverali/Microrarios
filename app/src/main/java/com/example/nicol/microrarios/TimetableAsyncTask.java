@@ -3,9 +3,16 @@ package com.example.nicol.microrarios;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 
-class TimetableAsyncTask extends AsyncTask<Void, Void, TimetablesSingleton> {
+import bus.timetable.BahiaBlancaTimetable;
+import bus.timetable.BusTimeTable;
+import bus.timetable.PuntaAltaTimetable;
+
+class TimetableAsyncTask extends AsyncTask<Void, Void, BusTimeTable[]> {
+    // Keys for intent arguments (onPostExecute)
+    public static final String PUNTA_ALTA_KEY = "com.verali.apps.timetables.puntaalta";
+    public static final String BAHIA_BLANCA_KEY = "com.verali.apps.timetables.bahiablanca";
+
     // Files path
     private String mPuntaAltaPath;
     private String mBahiaBlancaPath;
@@ -20,18 +27,18 @@ class TimetableAsyncTask extends AsyncTask<Void, Void, TimetablesSingleton> {
     }
 
     @Override
-    protected TimetablesSingleton doInBackground(Void... voids) {
-        TimetablesSingleton.setPuntaAltaPath(mPuntaAltaPath);
-        TimetablesSingleton.setBahiaBlancaPath(mBahiaBlancaPath);
-        return TimetablesSingleton.getInstance();
+    protected BusTimeTable[] doInBackground(Void... voids) {
+        TimetablesSingleton.getInstance();
+        return new BusTimeTable[]{new PuntaAltaTimetable(mPuntaAltaPath), new BahiaBlancaTimetable(mBahiaBlancaPath)};
     }
 
     @Override
-    protected void onPostExecute(TimetablesSingleton tables) {
+    protected void onPostExecute(BusTimeTable[] tables) {
         super.onPostExecute(tables);
-        if(tables.getTimetablesState() == TimetablesSingleton.STATE_LOADED){
-            appContext.startActivity(new Intent(appContext, HomeActivity.class));
-        }
+        Intent intent = new Intent(appContext, HomeActivity.class);
+        intent.putExtra(PUNTA_ALTA_KEY, tables[0]);
+        intent.putExtra(BAHIA_BLANCA_KEY, tables[1]);
+        appContext.startActivity(intent);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.nicol.microrarios;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,8 +22,15 @@ import bus.timetable.BusTimeTable;
  * This fragment represents the main section of the app. It shows information about the current next bus.
  */
 public class NextBusFragment extends Fragment {
+    // Constant keys for communication
+    public static final String TIMETABLE_KEY = "com.verali.apps.NextBusFragment.timetable";
+    public static final String DEPARTURE_STOP_KEY = "com.verali.apps.NextBusFragment.departureStop";
+    public static final String ARRIVAL_STOP_KEY = "com.verali.apps.NextBusFragment.arrivalStop";
+
     // Attributes
-    private BusTimeTable mTimetable;
+    private BusTimeTable timetable;
+    private BusStop departureStop;
+    private BusStop arrivalStop;
 
     // Prefab Layouts
     private static final int VERTICAL_STOP = R.layout.template_vertical_bs;
@@ -32,25 +38,23 @@ public class NextBusFragment extends Fragment {
 
     @Override
     /**
-     * If the creator activity is HomeActivity, then checks if the timetables are loaded and stores the current one.
+     * Get timetable and stops from arguments, error if no arguments given.
      */
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Activity creatorActivity = getActivity();
-        if(creatorActivity instanceof HomeActivity){
-            HomeActivity home = (HomeActivity) creatorActivity;
-            TimetablesSingleton timetables = TimetablesSingleton.getInstance();
-            if(timetables.getTimetablesState() == TimetablesSingleton.STATE_LOADED){
-                mTimetable = timetables.getTimetable(home.getCurrentTableId());
-            }
-        }
+        Bundle arguments = getArguments();
+        if(arguments == null)
+            throw new UnsupportedOperationException("This fragment can't be created without timetable and stops given as arguments");
+        timetable = arguments.getParcelable(TIMETABLE_KEY);
+        departureStop = arguments.getParcelable(DEPARTURE_STOP_KEY);
+        arrivalStop = arguments.getParcelable(ARRIVAL_STOP_KEY);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_next_bus, container, false);
-        if(mTimetable != null){
-            Bus nextBus = mTimetable.nextBus();
+        if(timetable != null){
+            Bus nextBus = timetable.nextBus();
             // Make view
             setMainTime(nextBus, layout);
             setBusStops(nextBus, layout.findViewById(R.id.vertical_timeline_viewgroup));

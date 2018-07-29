@@ -1,6 +1,5 @@
 package com.example.nicol.microrarios;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,12 +15,20 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 
 import bus.Bus;
+import bus.BusStop;
 import bus.helper.ScheduleTime;
 import bus.timetable.BusTimeTable;
 
 public class FeedFragment extends Fragment {
+    // Constant keys for communication
+    public static final String TIMETABLE_KEY = "com.verali.apps.FeedFragment.timetable";
+    public static final String DEPARTURE_STOP_KEY = "com.verali.apps.FeedFragment.departureStop";
+    public static final String ARRIVAL_STOP_KEY = "com.verali.apps.FeedFragment.arrivalStop";
+
     // Attributes
-    private BusTimeTable mTimetable;
+    private BusTimeTable timetable;
+    private BusStop departureStop;
+    private BusStop arrivalStop;
     private int loadCardsTimes = 1;
 
     // Prefab layouts
@@ -32,18 +39,16 @@ public class FeedFragment extends Fragment {
 
     @Override
     /**
-     * If the creator activity is HomeActivity, then checks if the timetables are loaded and stores the current one.
+     * Get timetable and stops from arguments, error if no arguments given.
      */
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Activity creatorActivity = getActivity();
-        if(creatorActivity instanceof HomeActivity){
-            HomeActivity home = (HomeActivity) creatorActivity;
-            TimetablesSingleton timetables = TimetablesSingleton.getInstance();
-            if(timetables.getTimetablesState() == TimetablesSingleton.STATE_LOADED){
-                mTimetable = timetables.getTimetable(home.getCurrentTableId());
-            }
-        }
+        Bundle arguments = getArguments();
+        if(arguments == null)
+            throw new UnsupportedOperationException("This fragment can't be created without timetable and stops given as arguments");
+        timetable = arguments.getParcelable(TIMETABLE_KEY);
+        departureStop = arguments.getParcelable(DEPARTURE_STOP_KEY);
+        arrivalStop = arguments.getParcelable(ARRIVAL_STOP_KEY);
     }
 
     @Nullable
@@ -55,7 +60,7 @@ public class FeedFragment extends Fragment {
         View separatorBlank = inflater.inflate(CARD_BLANK, layout, false);
         separatorBlank.getLayoutParams().height = (int) getResources().getDimension(R.dimen.feed_blank_separator_height);
 
-        if(mTimetable != null){
+        if(timetable != null){
             ListView listView = layout.findViewById(R.id.next_buses_listview);
             setLastBus(layout, inflater);
             // Add blank space between cards
@@ -75,7 +80,7 @@ public class FeedFragment extends Fragment {
     // Private view creator methods
     private void setLastBus(ViewGroup layout, LayoutInflater inflater){
         // Set last bus card
-        Bus lastBus = mTimetable.lastBus();
+        Bus lastBus = timetable.lastBus();
         View lastBusCard = inflater.inflate(SINGLE_CARD_LAST, layout, false);
         ((TextView) lastBusCard.findViewById(R.id.leave_time_textview)).setText(getFormattedDifference(lastBus.getDepartureStop().getValue(), new ScheduleTime(DateTime.now())));
         ((TextView) lastBusCard.findViewById(R.id.departure_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getDepartureStop().getValue().getHour(), lastBus.getDepartureStop().getValue().getMinute()));
@@ -97,7 +102,7 @@ public class FeedFragment extends Fragment {
         layout.addView(titleView, listViewIndex);
 
         // Set listview
-        CardArrayAdapter adapter = new CardArrayAdapter(getContext(), 0, mTimetable.nextBuses(1));
+        CardArrayAdapter adapter = new CardArrayAdapter(getContext(), 0, timetable.nextBuses(1));
         listView.setAdapter(adapter);
         setListViewHeightBasedOnChildren(listView);
 
@@ -105,7 +110,7 @@ public class FeedFragment extends Fragment {
         loadMoreButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-              adapter.addAll(mTimetable.nextBuses(adapter.getCount() + 1));
+              adapter.addAll(timetable.nextBuses(adapter.getCount() + 1));
               setListViewHeightBasedOnChildren(listView);
               if(--loadCardsTimes == 0){
                   loadMoreButton.setEnabled(false);

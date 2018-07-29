@@ -1,5 +1,7 @@
 package com.example.nicol.microrarios;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,10 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import bus.BusStop;
+import bus.timetable.BusTimeTable;
 
 public class HomeActivity extends AppCompatActivity {
     // Attributes
-    private TimetablesSingleton timetables;
+    private BusTimeTable puntaAltaTimetable;
+    private BusTimeTable bahiaBlancaTimetable;
     private Map<BusStop, Integer> stopsHierarchy;
 
     @Override
@@ -33,34 +37,63 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Create tables
+        if(getIntent().hasExtra(TimetableAsyncTask.PUNTA_ALTA_KEY)){
+            puntaAltaTimetable = getIntent().getParcelableExtra(TimetableAsyncTask.PUNTA_ALTA_KEY);
+            bahiaBlancaTimetable = getIntent().getParcelableExtra(TimetableAsyncTask.BAHIA_BLANCA_KEY);
+        }
+        else if(savedInstanceState != null && savedInstanceState.containsKey(TimetableAsyncTask.PUNTA_ALTA_KEY)){
+            puntaAltaTimetable = savedInstanceState.getParcelable(TimetableAsyncTask.PUNTA_ALTA_KEY);
+            bahiaBlancaTimetable = savedInstanceState.getParcelable(TimetableAsyncTask.BAHIA_BLANCA_KEY);
+        }
+        else{
+            throw new UnsupportedOperationException("Activity can not be created without providing the timetables.");
+        }
+
+        // Set bus stops hierarchy
+        stopsHierarchy = new HashMap<>();
+        List<BusStop> stops = puntaAltaTimetable.getBusStops();
+        for(int i = 0; i < stops.size(); i++){
+            stopsHierarchy.put(stops.get(i), i);
+        }
+
         // Set template_toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_settings_white_24dp);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // Check if tables were loaded
-        timetables = TimetablesSingleton.getInstance();
-        if(timetables.getTimetablesState() == TimetablesSingleton.STATE_LOADED){
-            // Set bus stops hierarchy
-            stopsHierarchy = new HashMap<>();
-            List<BusStop> stops = timetables.getTimetable(TimetablesSingleton.PUNTA_ALTA_TIMETABLE_ID).getBusStops();
-            for(int i = 0; i < stops.size(); i++){
-                stopsHierarchy.put(stops.get(i), i);
-            }
+        // Setup selector
+        SlidingUpPanelLayout slidingPanel = findViewById(R.id.slidinguppanel_layout);
+        FrameLayout expandedView = findViewById(R.id.selector_expanded_view);
+        LinearLayout collapsedView = findViewById(R.id.selector_collapsed_view);
+        Spinner originSpinner = expandedView.findViewById(R.id.origin_spinner);
+        Spinner arriveSpinner = expandedView.findViewById(R.id.arrival_spinner);
+        initSelectorPanel(originSpinner, slidingPanel.findViewById(R.id.origin_textview), arriveSpinner,
+                slidingPanel.findViewById(R.id.arrival_textview), slidingPanel.findViewById(R.id.invert_imagebutton));
+        slidingPanel.addPanelSlideListener(new SelectorListener(expandedView, collapsedView, slidingPanel));
 
-            // Setup selector
-            SlidingUpPanelLayout slidingPanel = findViewById(R.id.slidinguppanel_layout);
-            FrameLayout expandedView = findViewById(R.id.selector_expanded_view);
-            LinearLayout collapsedView = findViewById(R.id.selector_collapsed_view);
-            Spinner originSpinner = expandedView.findViewById(R.id.origin_spinner);
-            Spinner arriveSpinner = expandedView.findViewById(R.id.arrival_spinner);
-            initSelectorPanel(originSpinner, slidingPanel.findViewById(R.id.origin_textview), arriveSpinner,
-                    slidingPanel.findViewById(R.id.arrival_textview), slidingPanel.findViewById(R.id.invert_imagebutton));
-            slidingPanel.addPanelSlideListener(new SelectorListener(expandedView, collapsedView, slidingPanel));
-        }
-
-
+        // Create fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction newTransaction = fragmentManager.beginTransaction();
+            // Add NextBusFragment
+        Bundle nextBusBundle = new Bundle();
+        nextBusBundle.putParcelable(NextBusFragment.TIMETABLE_KEY, getCurrentTimetable());
+        nextBusBundle.putParcelable(NextBusFragment.DEPARTURE_STOP_KEY, getCurrentTimetable().getBusStops().get(0));
+        nextBusBundle.putParcelable(NextBusFragment.ARRIVAL_STOP_KEY, getCurrentTimetable().getBusStops().get(2));
+        NextBusFragment nextBusFragment = new NextBusFragment();
+        nextBusFragment.setArguments(nextBusBundle);
+        newTransaction.add(R.id.next_bus_fragment_container, nextBusFragment);
+            // Add FeedFragment
+        Bundle feedBundle = new Bundle();
+        feedBundle.putParcelable(FeedFragment.TIMETABLE_KEY, getCurrentTimetable());
+        feedBundle.putParcelable(FeedFragment.DEPARTURE_STOP_KEY, getCurrentTimetable().getBusStops().get(0));
+        feedBundle.putParcelable(FeedFragment.ARRIVAL_STOP_KEY, getCurrentTimetable().getBusStops().get(1));
+        FeedFragment feedFragment = new FeedFragment();
+        feedFragment.setArguments(feedBundle);
+        newTransaction.add(R.id.feed_fragment_container, feedFragment);
+            // Commit transaction
+        newTransaction.commit();
     }
 
     @Override
@@ -80,9 +113,9 @@ public class HomeActivity extends AppCompatActivity {
      * Returns the TimetablesSingleton table id according to the user requests.
      * @return Current timetable id
      */
-    public int getCurrentTableId(){
+    public BusTimeTable getCurrentTimetable(){
         // TODO
-        return TimetablesSingleton.PUNTA_ALTA_TIMETABLE_ID;
+        return puntaAltaTimetable;
     }
 
     /**
@@ -90,7 +123,7 @@ public class HomeActivity extends AppCompatActivity {
      */
 
     private void initSelectorPanel(Spinner originSpinner, TextView originTextView, Spinner arrivalSpinner, TextView arrivalTextView, ImageButton invert){
-        List<BusStop> busStops = timetables.getTimetable(getCurrentTableId()).getBusStops();
+        List<BusStop> busStops = getCurrentTimetable().getBusStops();
 
         // Set values
         ArrayAdapter<BusStop> spinnersAdapter = new ArrayAdapter<BusStop>(this, R.layout.spinner_selector_item, busStops);

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".HomeActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -22,30 +22,26 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:umanoPanelHeight="@dimen/selector_collapse_height">
 
-           <android.support.v4.widget.NestedScrollView
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <FrameLayout
+                    android:id="@+id/next_bus_fragment_container"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:focusableInTouchMode="true">
+                    android:layout_height="wrap_content"/>
 
-                    <fragment
-                        android:name="com.example.nicol.microrarios.NextBusFragment"
-                        android:id="@+id/next_bus_fragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:layout="@layout/fragment_next_bus" />
-
-                    <fragment
-                        android:name="com.example.nicol.microrarios.FeedFragment"
-                        android:id="@+id/feed_fragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:layout="@layout/fragment_feed" />
-                </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/feed_fragment_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
         <include layout="@layout/template_travel_selector" />
