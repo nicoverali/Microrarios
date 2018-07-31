@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import bus.BusStop;
-import bus.timetable.BusTimeTable;
+import bus.timetable.BusTimetable;
 
 public class HomeActivity extends AppCompatActivity {
     // Attributes
-    private BusTimeTable puntaAltaTimetable;
-    private BusTimeTable bahiaBlancaTimetable;
+    private BusTimetable puntaAltaTimetable;
+    private BusTimetable bahiaBlancaTimetable;
     private Map<BusStop, Integer> stopsHierarchy;
 
     @Override
@@ -115,7 +115,7 @@ public class HomeActivity extends AppCompatActivity {
      * Returns the timetable that shows the information asked for the user at this moment
      * @return Current timetable id
      */
-    public BusTimeTable getCurrentTimetable(){
+    public BusTimetable getCurrentTimetable(){
         // TODO
         return puntaAltaTimetable;
     }

@@ -4,15 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
-import bus.timetable.BahiaBlancaTimetable;
-import bus.timetable.BusTimeTable;
-import bus.timetable.PuntaAltaTimetable;
+import bus.InformationLoadException;
+import bus.timetable.TimetablePABB;
 
-class TimetableAsyncTask extends AsyncTask<Void, Void, BusTimeTable[]> {
-    // Keys for intent arguments (onPostExecute)
-    public static final String PUNTA_ALTA_KEY = "com.verali.apps.timetables.puntaalta";
-    public static final String BAHIA_BLANCA_KEY = "com.verali.apps.timetables.bahiablanca";
-
+class TimetableAsyncTask extends AsyncTask<Void, Void, Void> {
     // Files path
     private String mPuntaAltaPath;
     private String mBahiaBlancaPath;
@@ -27,17 +22,26 @@ class TimetableAsyncTask extends AsyncTask<Void, Void, BusTimeTable[]> {
     }
 
     @Override
-    protected BusTimeTable[] doInBackground(Void... voids) {
-        return new BusTimeTable[]{new PuntaAltaTimetable(mPuntaAltaPath), new BahiaBlancaTimetable(mBahiaBlancaPath)};
+    protected Void doInBackground(Void... voids) {
+        // Load timetables from web and serialize them.
+        new TimetablePABB.Builder(TimetablePABB.PUNTA_ALTA_TIMETABLE_ID).serialize(mPuntaAltaPath);
+        new TimetablePABB.Builder(TimetablePABB.BAHIA_BLANCA_TIMETABLE_ID).serialize(mBahiaBlancaPath);
+        return null;
     }
 
     @Override
-    protected void onPostExecute(BusTimeTable[] tables) {
-        super.onPostExecute(tables);
-        Intent intent = new Intent(appContext, HomeActivity.class);
-        intent.putExtra(PUNTA_ALTA_KEY, tables[0]);
-        intent.putExtra(BAHIA_BLANCA_KEY, tables[1]);
-        appContext.startActivity(intent);
+    protected void onPostExecute(Void voidd) {
+        super.onPostExecute(voidd);
+        // Test that tables are correctly serialized
+        try{
+            new TimetablePABB.Builder(TimetablePABB.PUNTA_ALTA_TIMETABLE_ID).forceLoadFromStorage(mPuntaAltaPath);
+            new TimetablePABB.Builder(TimetablePABB.BAHIA_BLANCA_TIMETABLE_ID).forceLoadFromStorage(mBahiaBlancaPath);
+            Intent intent = new Intent(appContext, HomeActivity.class);
+            appContext.startActivity(intent);
+        }catch (InformationLoadException e){
+            // TODO This behaviour should be different
+            throw e;
+        }
     }
 
 }
