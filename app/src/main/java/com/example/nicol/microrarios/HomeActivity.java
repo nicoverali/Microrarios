@@ -73,27 +73,29 @@ public class HomeActivity extends AppCompatActivity {
                 slidingPanel.findViewById(R.id.arrival_textview), slidingPanel.findViewById(R.id.invert_imagebutton));
         slidingPanel.addPanelSlideListener(new SelectorListener(expandedView, collapsedView, slidingPanel));
 
-        // Create fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction newTransaction = fragmentManager.beginTransaction();
+        // Create fragments only if this activity is not being restored
+        if(savedInstanceState == null){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction newTransaction = fragmentManager.beginTransaction();
             // Add NextBusFragment
-        Bundle nextBusBundle = new Bundle();
-        nextBusBundle.putParcelable(NextBusFragment.TIMETABLE_KEY, getCurrentTimetable());
-        nextBusBundle.putParcelable(NextBusFragment.DEPARTURE_STOP_KEY, getCurrentTimetable().getBusStops().get(0));
-        nextBusBundle.putParcelable(NextBusFragment.ARRIVAL_STOP_KEY, getCurrentTimetable().getBusStops().get(2));
-        NextBusFragment nextBusFragment = new NextBusFragment();
-        nextBusFragment.setArguments(nextBusBundle);
-        newTransaction.add(R.id.next_bus_fragment_container, nextBusFragment);
+            Bundle nextBusBundle = new Bundle();
+            nextBusBundle.putParcelable(NextBusFragment.TIMETABLE_KEY, getCurrentTimetable());
+            nextBusBundle.putParcelable(NextBusFragment.DEPARTURE_STOP_KEY, getCurrentTimetable().getBusStops().get(0));
+            nextBusBundle.putParcelable(NextBusFragment.ARRIVAL_STOP_KEY, getCurrentTimetable().getBusStops().get(2));
+            NextBusFragment nextBusFragment = new NextBusFragment();
+            nextBusFragment.setArguments(nextBusBundle);
+            newTransaction.add(R.id.next_bus_fragment_container, nextBusFragment);
             // Add FeedFragment
-        Bundle feedBundle = new Bundle();
-        feedBundle.putParcelable(FeedFragment.TIMETABLE_KEY, getCurrentTimetable());
-        feedBundle.putParcelable(FeedFragment.DEPARTURE_STOP_KEY, getCurrentTimetable().getBusStops().get(0));
-        feedBundle.putParcelable(FeedFragment.ARRIVAL_STOP_KEY, getCurrentTimetable().getBusStops().get(1));
-        FeedFragment feedFragment = new FeedFragment();
-        feedFragment.setArguments(feedBundle);
-        newTransaction.add(R.id.feed_fragment_container, feedFragment);
+            Bundle feedBundle = new Bundle();
+            feedBundle.putParcelable(FeedFragment.TIMETABLE_KEY, getCurrentTimetable());
+            feedBundle.putParcelable(FeedFragment.DEPARTURE_STOP_KEY, getCurrentTimetable().getBusStops().get(0));
+            feedBundle.putParcelable(FeedFragment.ARRIVAL_STOP_KEY, getCurrentTimetable().getBusStops().get(1));
+            FeedFragment feedFragment = new FeedFragment();
+            feedFragment.setArguments(feedBundle);
+            newTransaction.add(R.id.feed_fragment_container, feedFragment);
             // Commit transaction
-        newTransaction.commit();
+            newTransaction.commit();
+        }
     }
 
     @Override
@@ -110,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Returns the TimetablesSingleton table id according to the user requests.
+     * Returns the timetable that shows the information asked for the user at this moment
      * @return Current timetable id
      */
     public BusTimeTable getCurrentTimetable(){

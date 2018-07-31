@@ -28,7 +28,6 @@ class TimetableAsyncTask extends AsyncTask<Void, Void, BusTimeTable[]> {
 
     @Override
     protected BusTimeTable[] doInBackground(Void... voids) {
-        TimetablesSingleton.getInstance();
         return new BusTimeTable[]{new PuntaAltaTimetable(mPuntaAltaPath), new BahiaBlancaTimetable(mBahiaBlancaPath)};
     }
 
