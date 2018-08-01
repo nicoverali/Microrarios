@@ -2,7 +2,6 @@ package com.example.nicol.microrarios;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.content.SharedPreferences;
 
 import bus.BusStop;
 import bus.timetable.BusTimetable;
@@ -18,24 +17,28 @@ public class TimetableViewModel extends AndroidViewModel {
     private BusTimetable BahiaBlancaTimetable;
     private BusStop departureStop;
     private BusStop arrivalStop;
-    private boolean informationLoaded = false;
 
     // Constructor
     public TimetableViewModel(Application application){
         super(application);
-        PuntaAltaTimetable = new TimetablePABB.Builder(TimetablePABB.PUNTA_ALTA_TIMETABLE_ID).forceLoadFromStorage((String) getApplication().getSharedPreferences(PUNTA_ALTA_TIMETABLE_PATH,0).getString());
+        PuntaAltaTimetable = new TimetablePABB.Builder(TimetablePABB.PUNTA_ALTA_TIMETABLE_ID).forceLoadFromStorage(getApplication().getFilesDir().getAbsolutePath()).build();
+        BahiaBlancaTimetable = new TimetablePABB.Builder(TimetablePABB.BAHIA_BLANCA_TIMETABLE_ID).forceLoadFromStorage(getApplication().getFilesDir().getAbsolutePath()).build();
+        departureStop = TimetablePABB.getStopFromName(getApplication().getSharedPreferences(SplashActivity.PREFERENCES, 0).getString(SplashActivity.DEPARTURE_STOP_KEY, null));
+        arrivalStop = TimetablePABB.getStopFromName(getApplication().getSharedPreferences(SplashActivity.PREFERENCES,0).getString(SplashActivity.ARRIVAL_STOP_KEY, null));
+
     }
 
     // Methods
     public BusTimetable getTimetable() {
-        if(!informationLoaded)
-            loadInformation();
+        // TODO return the timetable that corresponds to the user selection
         return PuntaAltaTimetable;
     }
 
-    // Private loader method
-    private void loadInformation(){
+    public BusStop getDepartureStop(){
+        return departureStop;
+    }
 
-        PuntaAltaTimetable = new TimetablePABB.Builder(TimetablePABB.PUNTA_ALTA_TIMETABLE_ID).forceLoadFromStorage()
+    public BusStop getArrivalStop() {
+        return arrivalStop;
     }
 }

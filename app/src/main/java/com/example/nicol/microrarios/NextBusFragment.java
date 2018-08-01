@@ -1,6 +1,7 @@
 package com.example.nicol.microrarios;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,7 +17,6 @@ import java.util.Map;
 import bus.Bus;
 import bus.BusStop;
 import bus.helper.ScheduleTime;
-import bus.timetable.BusTimeTable;
 
 /**
  * This fragment represents the main section of the app. It shows information about the current next bus.
@@ -28,9 +28,7 @@ public class NextBusFragment extends Fragment {
     public static final String ARRIVAL_STOP_KEY = "com.verali.apps.NextBusFragment.arrivalStop";
 
     // Attributes
-    private BusTimeTable timetable;
-    private BusStop departureStop;
-    private BusStop arrivalStop;
+    private TimetableViewModel viewModel;
 
     // Prefab Layouts
     private static final int VERTICAL_STOP = R.layout.template_vertical_bs;
@@ -42,23 +40,17 @@ public class NextBusFragment extends Fragment {
      */
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
-        if(arguments == null)
-            throw new UnsupportedOperationException("This fragment can't be created without timetable and stops given as arguments");
-        timetable = arguments.getParcelable(TIMETABLE_KEY);
-        departureStop = arguments.getParcelable(DEPARTURE_STOP_KEY);
-        arrivalStop = arguments.getParcelable(ARRIVAL_STOP_KEY);
+        viewModel = ViewModelProviders.of(getActivity()).get(TimetableViewModel.class);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_next_bus, container, false);
-        if(timetable != null){
-            Bus nextBus = timetable.nextBus();
-            // Make view
-            setMainTime(nextBus, layout);
-            setBusStops(nextBus, layout.findViewById(R.id.vertical_timeline_viewgroup));
-        }
+        Bus nextBus = viewModel.getTimetable().nextBus();
+        // Make view
+        setMainTime(nextBus, layout);
+        setBusStops(nextBus, layout.findViewById(R.id.vertical_timeline_viewgroup));
         return layout;
     }
 
