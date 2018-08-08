@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,6 +24,7 @@ import bus.BusStop;
 public class HomeActivity extends AppCompatActivity {
     // Attributes
     private TimetableViewModel viewModel;
+    private SlidingUpPanelLayout slidingPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +41,23 @@ public class HomeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // Setup selector
-        SlidingUpPanelLayout slidingPanel = findViewById(R.id.slidinguppanel_layout);
+        this.slidingPanel = findViewById(R.id.slidinguppanel_layout);
         FrameLayout expandedView = findViewById(R.id.selector_expanded_view);
-        LinearLayout collapsedView = findViewById(R.id.selector_collapsed_view);
+        ViewGroup collapsedView = findViewById(R.id.selector_collapsed_view);
         Spinner originSpinner = expandedView.findViewById(R.id.origin_spinner);
         Spinner arriveSpinner = expandedView.findViewById(R.id.arrival_spinner);
         initSelectorPanel(originSpinner, slidingPanel.findViewById(R.id.origin_textview), arriveSpinner, slidingPanel.findViewById(R.id.arrival_textview), slidingPanel.findViewById(R.id.invert_imagebutton));
         slidingPanel.addPanelSlideListener(new SelectorListener(expandedView, collapsedView, slidingPanel));
+
+        // Make sliding panel close when touching outside
+        View outsidePanel = findViewById(R.id.umano_main_view);
+        outsidePanel.setOnTouchListener((view, motionEvent) -> {
+            if(slidingPanel.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+                slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                return true;
+            }
+            return false;
+        });
 
         // Create fragments only if this activity is not being restored
         if(savedInstanceState == null){
@@ -59,6 +70,22 @@ public class HomeActivity extends AppCompatActivity {
             // Commit transaction
             newTransaction.commit();
         }
+    }
+
+    /**
+     * Checks if the Umano Sliding Panel is open, if it is and the key press is "back" then close the panel, if not do the
+     * default back action
+     * @param keyCode Pressed key code
+     * @param event Event
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && this.slidingPanel.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+            slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

@@ -17,7 +17,7 @@
         android:alpha="0"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:alpha="1">
+        tools:alpha="0">
 
         <ImageView
             android:id="@+id/imageView10"
@@ -84,18 +84,19 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/selector_collapsed_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/selector_collapse_height"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_gravity="bottom"
         android:clickable="false">
 
         <TextView
             android:id="@+id/origin_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_toStartOf="@id/selector_collapsed_middle_arrow"
+            android:layout_centerVertical="true"
             android:fontFamily="@font/lato"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -104,8 +105,10 @@
 
 
         <FrameLayout
+            android:id="@+id/selector_collapsed_middle_arrow"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_centerInParent="true"
             android:paddingStart="32dp"
             android:paddingEnd="32dp">
 
@@ -131,12 +134,13 @@
             android:id="@+id/arrival_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_toEndOf="@id/selector_collapsed_middle_arrow"
+            android:layout_centerVertical="true"
             android:fontFamily="@font/lato"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="@dimen/text_small"
             android:text="Parque de Mayo"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>
