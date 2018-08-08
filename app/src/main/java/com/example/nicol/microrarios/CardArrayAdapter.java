@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import bus.Bus;
+import bus.BusStop;
 import bus.helper.ScheduleTime;
 
 class CardArrayAdapter extends ArrayAdapter<Bus> {
@@ -23,25 +24,28 @@ class CardArrayAdapter extends ArrayAdapter<Bus> {
     // Attributes
     private Context context;
     private List<Bus> buses;
+    private BusStop departureStop;
+    private BusStop arrivalStop;
 
     // Constructor
-    public CardArrayAdapter(@NonNull Context context, int resource, @NonNull List<Bus> buses) {
+    public CardArrayAdapter(@NonNull Context context, int resource, @NonNull List<Bus> buses, BusStop departureStop, BusStop arrivalStop) {
         super(context, resource, buses);
         this.context = context;
         this.buses = buses;
+        this.departureStop = departureStop;
+        this.arrivalStop = arrivalStop;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // TODO Not get departure and arrival stop, but the stop the user wants
         View viewToReturn = convertView != null && convertView instanceof LinearLayout ? convertView : LayoutInflater.from(context).inflate(R.layout.template_next_buses_card, null);
         Bus busToShow = buses.get(position);
         // Set time left
-        ((TextView)viewToReturn.findViewById(R.id.time_left_textview)).setText(getTimeLeft(busToShow.getDepartureStop().getValue()));
+        ((TextView)viewToReturn.findViewById(R.id.time_left_textview)).setText(getTimeLeft(busToShow.getBusTimeAt(departureStop)));
         // Set departure and arrival times
-        ScheduleTime departureTime = busToShow.getDepartureStop().getValue();
-        ScheduleTime arrivalTime = busToShow.getArrivalStop().getValue();
+        ScheduleTime departureTime = busToShow.getBusTimeAt(departureStop);
+        ScheduleTime arrivalTime = busToShow.getBusTimeAt(arrivalStop);
         ((TextView)viewToReturn.findViewById(R.id.departure_time_textview)).setText(context.getResources().getString(R.string.time_template, departureTime.getHour(), departureTime.getMinute()));
         ((TextView)viewToReturn.findViewById(R.id.arrival_time_textview)).setText(context.getResources().getString(R.string.time_template, arrivalTime.getHour(), arrivalTime.getMinute()));
 

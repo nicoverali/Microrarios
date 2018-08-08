@@ -4,6 +4,13 @@
     <!--Template strings-->
     <string name="time_template">%1$02d:%2$02d</string>
 
+    <!--Design strings-->
+    <string-array name="spinner_design_items">
+        <item>Punta Alta</item>
+        <item>Hospital Penna</item>
+        <item>Bahia Blanca</item>
+    </string-array>
+
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>

@@ -13,6 +13,13 @@
     <style name="SplashScreenTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/ic_splash_screen_background</item>
     </style>
+    
+    <!--Spinners styles-->
+    <style name="SpinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+    </style>
+    <style name="SpinnerDropdownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:background">@drawable/ic_top_bottom_bordered</item>
+    </style>
 
     <!--Button style-->
     <style name="ButtonLoadMoreStyle" parent="@android:style/Widget.Button">

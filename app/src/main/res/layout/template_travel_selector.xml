@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:id="@+id/selector_framelayout"
+<FrameLayout android:id="@+id/selector_framelayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/selector_expand_height"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <FrameLayout
@@ -15,14 +15,16 @@
         android:paddingStart="@dimen/large_margin"
         android:paddingEnd="@dimen/large_margin"
         android:alpha="0"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:alpha="1">
 
         <ImageView
             android:id="@+id/imageView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             app:srcCompat="@drawable/ic_selector_left_dots" />
 
         <LinearLayout
@@ -43,8 +45,9 @@
             <Spinner
                 android:id="@+id/origin_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/dropdownListPreferredItemHeight"
-                android:backgroundTint="@color/whiteLowOpacity"/>
+                android:layout_height="@dimen/selector_spinner_height"
+                android:backgroundTint="@color/whiteLowOpacity"
+                tools:entries="@array/spinner_design_items" />
 
             <View
                 android:layout_width="@dimen/selector_horizontal_divider_height"
@@ -64,8 +67,9 @@
             <Spinner
                 android:id="@+id/arrival_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/dropdownListPreferredItemHeight"
-                android:backgroundTint="@color/whiteLowOpacity"/>
+                android:layout_height="@dimen/selector_spinner_height"
+                android:backgroundTint="@color/whiteLowOpacity"
+                tools:entries="@array/spinner_design_items"/>
         </LinearLayout>
 
         <ImageButton

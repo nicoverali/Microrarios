@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -20,16 +19,11 @@ import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import bus.BusStop;
 
 public class HomeActivity extends AppCompatActivity {
     // Attributes
     private TimetableViewModel viewModel;
-    private Map<BusStop, Integer> stopsHierarchy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +32,6 @@ public class HomeActivity extends AppCompatActivity {
 
         // Get ViewModel instance
         viewModel = ViewModelProviders.of(this).get(TimetableViewModel.class);
-
-        // Set bus stops hierarchy
-        stopsHierarchy = new HashMap<>();
-        List<BusStop> stops = viewModel.getTimetable().getBusStops();
-        for(int i = 0; i < stops.size(); i++){
-            stopsHierarchy.put(stops.get(i), i);
-        }
 
         // Set template_toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -58,8 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         LinearLayout collapsedView = findViewById(R.id.selector_collapsed_view);
         Spinner originSpinner = expandedView.findViewById(R.id.origin_spinner);
         Spinner arriveSpinner = expandedView.findViewById(R.id.arrival_spinner);
-        initSelectorPanel(originSpinner, slidingPanel.findViewById(R.id.origin_textview), arriveSpinner,
-                slidingPanel.findViewById(R.id.arrival_textview), slidingPanel.findViewById(R.id.invert_imagebutton));
+        initSelectorPanel(originSpinner, slidingPanel.findViewById(R.id.origin_textview), arriveSpinner, slidingPanel.findViewById(R.id.arrival_textview), slidingPanel.findViewById(R.id.invert_imagebutton));
         slidingPanel.addPanelSlideListener(new SelectorListener(expandedView, collapsedView, slidingPanel));
 
         // Create fragments only if this activity is not being restored
@@ -92,33 +78,28 @@ public class HomeActivity extends AppCompatActivity {
      * Information loaders
      */
 
-    private void initSelectorPanel(Spinner originSpinner, TextView originTextView, Spinner arrivalSpinner, TextView arrivalTextView, ImageButton invert){
-        List<BusStop> busStops = viewModel.getTimetable().getBusStops();
-
+    private void initSelectorPanel(Spinner departureSpinner, TextView originTextView, Spinner arrivalSpinner, TextView arrivalTextView, ImageButton invert){
         // Set values
-        ArrayAdapter<BusStop> spinnersAdapter = new ArrayAdapter<BusStop>(this, R.layout.spinner_selector_item, busStops);
-        spinnersAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        int originSpinnerInitialItem = 0;
-        int arriveSpinnerInitialItem = spinnersAdapter.getCount()-1;
-        SpinnersOnSelectedListener spinnersListener = new SpinnersOnSelectedListener(originSpinner, originSpinnerInitialItem, originTextView, arrivalSpinner, arriveSpinnerInitialItem, arrivalTextView);
+        SpinnersOnSelectedListener spinnersListener = new SpinnersOnSelectedListener(departureSpinner, arrivalSpinner);
 
-        // Attach things
-        originSpinner.setAdapter(spinnersAdapter);
-        originSpinner.setOnItemSelectedListener(spinnersListener);
-        arrivalSpinner.setAdapter(spinnersAdapter);
+        // Attach adapters
+        departureSpinner.setAdapter(viewModel.getDepartureAdapter());
+        arrivalSpinner.setAdapter(viewModel.getArrivalAdapter());
+
+        // Attach listener
+        invert.setOnClickListener(param -> viewModel.invertStops());
+        departureSpinner.setOnItemSelectedListener(spinnersListener);
         arrivalSpinner.setOnItemSelectedListener(spinnersListener);
-        invert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                originSpinner.setSelection(arrivalSpinner.getSelectedItemPosition());
-            }
-        });
 
-        // Set initial values
-        originSpinner.setSelection(originSpinnerInitialItem);
-        arrivalSpinner.setSelection(arriveSpinnerInitialItem);
-        originTextView.setText(spinnersAdapter.getItem(originSpinnerInitialItem).getName());
-        arrivalTextView.setText(spinnersAdapter.getItem(arriveSpinnerInitialItem).getName());
+        // Subscribe to ViewModel changes
+        viewModel.observeDepartureStop(this, busStop -> {
+            originTextView.setText(busStop.getName());
+            departureSpinner.setSelection(viewModel.getDepartureAdapter().getPosition(busStop));
+        });
+        viewModel.observeArrivalStop(this, busStop -> {
+            arrivalTextView.setText(busStop.getName());
+            arrivalSpinner.setSelection(viewModel.getArrivalAdapter().getPosition(busStop));
+        });
     }
 
     /**
@@ -162,21 +143,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private class SpinnersOnSelectedListener implements Spinner.OnItemSelectedListener{
         // Attributes
-        private Spinner originSpinner;
+        private Spinner departureSpinner;
         private Spinner arrivalSpinner;
-        private TextView originText;
-        private TextView arriveText;
-        private int originSpinnerCurrentItem;
-        private int arriveSpinnerCurrentItem;
 
         // Constructor
-        public SpinnersOnSelectedListener(Spinner originSpinner, int  oSpinnerInitialItem, TextView originTextView, Spinner arrivalSpinner, int aSpinnerInitialItem, TextView arrivalTextView){
-            this.originSpinner = originSpinner;
+        public SpinnersOnSelectedListener(Spinner departureSpinner, Spinner arrivalSpinner){
+            this.departureSpinner = departureSpinner;
             this.arrivalSpinner = arrivalSpinner;
-            this.originText = originTextView;
-            this.arriveText = arrivalTextView;
-            this.originSpinnerCurrentItem = oSpinnerInitialItem;
-            this.arriveSpinnerCurrentItem = aSpinnerInitialItem;
         }
 
         // Methods
@@ -187,17 +160,11 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int adapterPosition, long id) {
-            if(adapterView.equals(originSpinner)){
-                if(adapterPosition == arriveSpinnerCurrentItem)
-                    arrivalSpinner.setSelection((arriveSpinnerCurrentItem = originSpinnerCurrentItem));
-                originSpinnerCurrentItem = adapterPosition;
-                originText.setText(((BusStop) originSpinner.getSelectedItem()).getName());
+            if(adapterView.equals(departureSpinner)){
+                viewModel.setDepartureStop((BusStop) adapterView.getAdapter().getItem(adapterPosition));
             }
             else if(adapterView.equals(arrivalSpinner)){
-                    if(adapterPosition == originSpinnerCurrentItem)
-                        originSpinner.setSelection((originSpinnerCurrentItem = arriveSpinnerCurrentItem));
-                    arriveSpinnerCurrentItem = adapterPosition;
-                    arriveText.setText(((BusStop) arrivalSpinner.getSelectedItem()).getName());
+                viewModel.setArrivalStop((BusStop) adapterView.getAdapter().getItem(adapterPosition));
             }
         }
     }

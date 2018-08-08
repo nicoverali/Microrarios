@@ -15,29 +15,18 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 import bus.Bus;
+import bus.BusStop;
 import bus.helper.ScheduleTime;
 
 public class FeedFragment extends Fragment {
-    // Constant keys for communication
-    public static final String TIMETABLE_KEY = "com.verali.apps.FeedFragment.timetable";
-    public static final String DEPARTURE_STOP_KEY = "com.verali.apps.FeedFragment.departureStop";
-    public static final String ARRIVAL_STOP_KEY = "com.verali.apps.FeedFragment.arrivalStop";
-
     // Attributes
     private int loadCardsTimes = 1;
     private TimetableViewModel viewModel;
 
-    // Prefab layouts
-    private static final int SINGLE_CARD_NEXT = R.layout.template_next_buses_card;
-    private static final int SINGLE_CARD_LAST = R.layout.template_last_bus_card;
-    private static final int CARD_TITLE = R.layout.template_feed_title;
-    private static final int CARD_BLANK = R.layout.template_feed_blank;
-
     @Override
-    /**
-     * Get timetable and stops from arguments, error if no arguments given.
-     */
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getActivity()).get(TimetableViewModel.class);
@@ -47,57 +36,45 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_feed, container, false);
-        View firstBlank = inflater.inflate(CARD_BLANK, layout, false);
-        firstBlank.getLayoutParams().height = (int) getResources().getDimension(R.dimen.feed_blank_first_height);
-        View separatorBlank = inflater.inflate(CARD_BLANK, layout, false);
-        separatorBlank.getLayoutParams().height = (int) getResources().getDimension(R.dimen.feed_blank_separator_height);
+        ViewGroup lastBusCard = layout.findViewById(R.id.last_bus_card);
+        ListView nextBusesListView = layout.findViewById(R.id.next_buses_listview);
+        setLastBus(lastBusCard);
+        setNextBuses(nextBusesListView, layout);
 
-        ListView listView = layout.findViewById(R.id.next_buses_listview);
-        setLastBus(layout, inflater);
-        // Add blank space between cards
-        layout.addView(separatorBlank, layout.indexOfChild(listView));
+        // Set titles
+        ((TextView)layout.findViewById(R.id.last_bus_title).findViewById(R.id.title_textview)).setText("Último en salir");
+        ((TextView)layout.findViewById(R.id.next_buses_title).findViewById(R.id.title_textview)).setText("Próximos colectivos");
 
-        setNextBuses(listView, layout, inflater);
-
-        // Add blank space at the beginning
-        layout.addView(firstBlank, 0);
+        // Subscribe to ViewModel changes
+        viewModel.observeAnyStopChange(this, busStop -> {
+            setLastBus(lastBusCard);
+            setNextBuses(nextBusesListView, layout);
+        });
         return layout;
     }
 
     // Private view creator methods
-    private void setLastBus(ViewGroup layout, LayoutInflater inflater){
-        // Set last bus card
-        Bus lastBus = viewModel.getTimetable().lastBus();
-        View lastBusCard = inflater.inflate(SINGLE_CARD_LAST, layout, false);
-        ((TextView) lastBusCard.findViewById(R.id.leave_time_textview)).setText(getFormattedDifference(lastBus.getDepartureStop().getValue(), new ScheduleTime(DateTime.now())));
-        ((TextView) lastBusCard.findViewById(R.id.departure_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getDepartureStop().getValue().getHour(), lastBus.getDepartureStop().getValue().getMinute()));
-        ((TextView) lastBusCard.findViewById(R.id.arrival_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getArrivalStop().getValue().getHour(), lastBus.getArrivalStop().getValue().getMinute()));
-        layout.addView(lastBusCard, 0);
-
-        // Set title
-        View titleView = inflater.inflate(CARD_TITLE, layout, false);
-        ((TextView) titleView.findViewById(R.id.title_textview)).setText("Último en salir");
-        layout.addView(titleView, 0);
+    private void setLastBus(ViewGroup lastBusView){
+        BusStop departureStop = viewModel.getDepartureStop();
+        BusStop arrivalStop = viewModel.getArrivalStop();
+        Bus lastBus = viewModel.getTimetable().lastBus(departureStop);
+        ((TextView) lastBusView.findViewById(R.id.leave_time_textview)).setText(getFormattedDifference(lastBus.getBusTimeAt(departureStop), new ScheduleTime(DateTime.now())));
+        ((TextView) lastBusView.findViewById(R.id.departure_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getBusTimeAt(departureStop).getHour(), lastBus.getBusTimeAt(departureStop).getMinute()));
+        ((TextView) lastBusView.findViewById(R.id.arrival_time_textview)).setText(getResources().getString(R.string.time_template, lastBus.getBusTimeAt(arrivalStop).getHour(), lastBus.getBusTimeAt(arrivalStop).getMinute()));
     }
-    private void setNextBuses(ListView listView, ViewGroup layout, LayoutInflater inflater){
-        Button loadMoreButton = (Button) layout.findViewById(R.id.load_more_button);
-
-        // Set title
-        int listViewIndex = layout.indexOfChild(listView);
-        View titleView = inflater.inflate(CARD_TITLE, layout, false);
-        ((TextView) titleView.findViewById(R.id.title_textview)).setText("Próximos colectivos");
-        layout.addView(titleView, listViewIndex);
-
+    private void setNextBuses(ListView listView, ViewGroup layout){
         // Set listview
-        CardArrayAdapter adapter = new CardArrayAdapter(getContext(), 0, viewModel.getTimetable().nextBuses(1));
+        List<Bus> buses = viewModel.getTimetable().nextBuses(viewModel.getDepartureStop(), 1);
+        CardArrayAdapter adapter = new CardArrayAdapter(getContext(), 0, buses, viewModel.getDepartureStop(), viewModel.getArrivalStop());
         listView.setAdapter(adapter);
         setListViewHeightBasedOnChildren(listView);
 
         // Add button listener
+        Button loadMoreButton = layout.findViewById(R.id.load_more_button);
         loadMoreButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-              adapter.addAll(viewModel.getTimetable().nextBuses(adapter.getCount() + 1));
+              adapter.addAll(viewModel.getTimetable().nextBuses(viewModel.getDepartureStop(), adapter.getCount() + 1));
               setListViewHeightBasedOnChildren(listView);
               if(--loadCardsTimes == 0){
                   loadMoreButton.setEnabled(false);

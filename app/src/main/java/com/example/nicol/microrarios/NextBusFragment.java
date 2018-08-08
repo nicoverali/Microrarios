@@ -22,11 +22,6 @@ import bus.helper.ScheduleTime;
  * This fragment represents the main section of the app. It shows information about the current next bus.
  */
 public class NextBusFragment extends Fragment {
-    // Constant keys for communication
-    public static final String TIMETABLE_KEY = "com.verali.apps.NextBusFragment.timetable";
-    public static final String DEPARTURE_STOP_KEY = "com.verali.apps.NextBusFragment.departureStop";
-    public static final String ARRIVAL_STOP_KEY = "com.verali.apps.NextBusFragment.arrivalStop";
-
     // Attributes
     private TimetableViewModel viewModel;
 
@@ -35,22 +30,20 @@ public class NextBusFragment extends Fragment {
     private static final int VERTICAL_BLANK = R.layout.template_vertical_bs_blank;
 
     @Override
-    /**
-     * Get timetable and stops from arguments, error if no arguments given.
-     */
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getActivity()).get(TimetableViewModel.class);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_next_bus, container, false);
-        Bus nextBus = viewModel.getTimetable().nextBus();
-        // Make view
-        setMainTime(nextBus, layout);
-        setBusStops(nextBus, layout.findViewById(R.id.vertical_timeline_viewgroup));
+        // Subscribe to ViewModel
+        viewModel.observeDepartureStop(this, departureStop -> {
+            setMainTime(departureStop, layout);
+            setBusStops(viewModel.getTimetable().nextBus(departureStop), layout.findViewById(R.id.vertical_timeline_viewgroup));
+        });
+
         return layout;
     }
 
@@ -58,11 +51,19 @@ public class NextBusFragment extends Fragment {
 
     /**
      * Sets the main time to the departure time of the next bus.
-     * @param nextBus Next bus
      * @param layout Fragment layout
      */
-    private void setMainTime(Bus nextBus, View layout){
-        ((TextView) layout.findViewById(R.id.text_main_time)).setText(nextBus.getDepartureStop().getValue().toString());
+    private void setMainTime(BusStop departureStop, View layout){
+        Iterable<Map.Entry<BusStop, ScheduleTime>> stopsEntries = viewModel.getTimetable().nextBus(departureStop).getBusStops();
+        int hour = -1;
+        int minute = -1;
+        for(Map.Entry<BusStop, ScheduleTime> entry : stopsEntries) {
+            if (entry.getKey().equals(departureStop)){
+                hour = entry.getValue().getHour();
+                minute = entry.getValue().getMinute();
+            }
+        }
+        ((TextView) layout.findViewById(R.id.text_main_time)).setText(getResources().getString(R.string.time_template, hour, minute));
     }
 
     /**
@@ -71,13 +72,23 @@ public class NextBusFragment extends Fragment {
      * @param timelineLayout Vertical timeline linear layout
      */
     private void setBusStops(Bus nextBus, LinearLayout timelineLayout){
+        // Clean ViewGroup first
+        timelineLayout.removeAllViews();
+
         LayoutInflater inflater = LayoutInflater.from(getContext());
         Iterable<Map.Entry<BusStop, ScheduleTime>> stops = nextBus.getBusStops();
 
+        // Add first blank space
+        LinearLayout.LayoutParams firstBlankViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,(int) getResources().getDimension(R.dimen.vertical_first_blank_timeline_height));
+        firstBlankViewParams.gravity = Gravity.END;
+        timelineLayout.addView(inflater.inflate(VERTICAL_BLANK, timelineLayout, false), firstBlankViewParams);
+
+        // Set stop and blank view parameters (Height, Width and Gravity)
         LinearLayout.LayoutParams blankViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int) getResources().getDimension(R.dimen.vertical_regular_blank_timeline_height));
         LinearLayout.LayoutParams stopViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         blankViewParams.gravity = (stopViewParams.gravity = Gravity.END);
 
+        // For every stop add a stop view and a blank view
         View tempBusStopView, tempBlankView;
         for(Map.Entry<BusStop, ScheduleTime> stop : stops){
             tempBusStopView = inflater.inflate(VERTICAL_STOP, timelineLayout, false);

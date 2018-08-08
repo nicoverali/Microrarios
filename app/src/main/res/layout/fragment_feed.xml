@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,6 +8,34 @@
     android:background="@color/white"
     android:clipChildren="false">
 
+    <View android:layout_width="@dimen/feed_blank_width"
+        android:layout_height="@dimen/feed_blank_first_height"
+        android:layout_marginStart="@dimen/feed_blank_marginLeft"
+        android:background="@color/colorAccentHighOpacity"/>
+
+    <include layout="@layout/template_feed_title"
+        android:id="@+id/last_bus_title" />
+
+    <View android:layout_width="@dimen/feed_blank_width"
+        android:layout_height="@dimen/feed_blank_separator_height"
+        android:layout_marginStart="@dimen/feed_blank_marginLeft"
+        android:background="@color/colorAccentHighOpacity"/>
+
+    <include layout="@layout/template_last_bus_card"
+        android:id="@+id/last_bus_card"/>
+
+    <View android:layout_width="@dimen/feed_blank_width"
+        android:layout_height="@dimen/feed_blank_first_height"
+        android:layout_marginStart="@dimen/feed_blank_marginLeft"
+        android:background="@color/colorAccentHighOpacity"/>
+
+    <include layout="@layout/template_feed_title"
+        android:id="@+id/next_buses_title"/>
+
+    <View android:layout_width="@dimen/feed_blank_width"
+        android:layout_height="@dimen/feed_blank_separator_height"
+        android:layout_marginStart="@dimen/feed_blank_marginLeft"
+        android:background="@color/colorAccentHighOpacity"/>
 
     <ListView
         android:id="@+id/next_buses_listview"
@@ -14,7 +43,8 @@
         android:layout_height="wrap_content"
         android:divider="@drawable/ic_card_list_separator"
         android:dividerHeight="@dimen/feed_cards_separation_height"
-        android:clipChildren="false">
+        android:clipChildren="false"
+        tools:listitem="@layout/template_next_buses_card">
     </ListView>
 
     <Button

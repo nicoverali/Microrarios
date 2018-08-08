@@ -1,6 +1,7 @@
 package com.example.nicol.microrarios;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,12 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set initial bus stops
+        SharedPreferences.Editor sharedPreferencesEditor = getSharedPreferences(PREFERENCES, 0).edit();
+        sharedPreferencesEditor.putString(DEPARTURE_STOP_KEY, "Terminal - PA");
+        sharedPreferencesEditor.putString(ARRIVAL_STOP_KEY, "Parque de Mayo");
+        sharedPreferencesEditor.commit();
+
         // Try to load timetables from storage
         try{
             new TimetablePABB.Builder(TimetablePABB.PUNTA_ALTA_TIMETABLE_ID).forceLoadFromStorage(getFilesDir().getAbsolutePath()).build();

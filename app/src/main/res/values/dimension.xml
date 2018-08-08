@@ -13,13 +13,15 @@
     <!--Elements default height or width-->
     <dimen name="toolbar_height">56dp</dimen>
     <dimen name="selector_collapse_height">48dp</dimen>
-    <dimen name="selector_expand_height">150dp</dimen>
+    <dimen name="selector_expand_height">145dp</dimen>
     <dimen name="selector_horizontal_divider_height">210dp</dimen>
+    <dimen name="selector_spinner_height">40dp</dimen>
     <dimen name="dot_size">8dp</dimen>
     <dimen name="vertical_first_blank_timeline_height">36dp</dimen>
     <dimen name="vertical_regular_blank_timeline_height">16dp</dimen>
     <dimen name="card_small_height">48dp</dimen>
     <dimen name="card_small_stops_width">140dp</dimen>
+    <dimen name="feed_blank_width">2dp</dimen>
     <dimen name="feed_blank_first_height">32dp</dimen>
     <dimen name="feed_blank_separator_height">16dp</dimen>
     <dimen name="feed_cards_separation_height">20dp</dimen>
